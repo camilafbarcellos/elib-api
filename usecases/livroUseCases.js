@@ -4,7 +4,7 @@ const Livro = require('../entities/livro');
 const getLivrosDB = async () => {
     try {
         const { rows } = await pool.query(`
-            SELECT p.codigo, p.titulo, to_char(p.data_cadastro,'YYYY-MM-DD'), p.autor, a.nome AS autor_nome,
+            SELECT p.codigo, p.titulo, to_char(p.data_cadastro,'YYYY-MM-DD') as data_cadastro, p.autor, a.nome AS autor_nome,
                    p.editora, e.nome AS editora_nome, p.ano
             FROM livros p
             JOIN autores a ON p.autor = a.codigo
