@@ -3,7 +3,7 @@ const Autor = require('../entities/autor')
 
 const getAutoresDB = async () => {
     try {    
-        const { rows } = await pool.query('SELECT * FROM autores ORDER BY nome');
+        const { rows } = await pool.query('SELECT * FROM autores ORDER BY codigo');
         return rows.map((autor) => new Autor(autor.codigo, autor.nome));        
     } catch (err) {
         throw 'Erro : ' + err;

@@ -3,7 +3,7 @@ const Editora = require('../entities/editora')
 
 const getEditorasDB = async () => {
     try {    
-        const { rows } = await pool.query('SELECT * FROM editoras ORDER BY nome');
+        const { rows } = await pool.query('SELECT * FROM editoras ORDER BY codigo');
         return rows.map((editora) => new Editora(editora.codigo, editora.nome));        
     } catch (err) {
         throw 'Erro : ' + err;
