@@ -4,12 +4,12 @@ const Livro = require('../entities/livro');
 const getLivrosDB = async () => {
     try {
         const { rows } = await pool.query(`
-            SELECT p.codigo, p.titulo, to_char(p.data_cadastro,'YYYY-MM-DD') as data_cadastro, p.autor, a.nome AS autor_nome,
-                   p.editora, e.nome AS editora_nome, p.ano
-            FROM livros p
-            JOIN autores a ON p.autor = a.codigo
-            JOIN editoras e ON p.editora = e.codigo
-            ORDER BY p.codigo
+            SELECT l.codigo as codigo, l.titulo as titulo, to_char(l.data_cadastro,'YYYY-MM-DD') as data_cadastro, l.autor as autor, a.nome AS autor_nome,
+                   l.editora as editora, e.nome AS editora_nome, l.ano as ano
+            FROM livros l
+            JOIN autores a ON l.autor = a.codigo
+            JOIN editoras e ON l.editora = e.codigo
+            ORDER BY l.codigo
         `);
         return rows.map((livro) => new Livro(
             livro.codigo,
@@ -28,12 +28,12 @@ const getLivrosDB = async () => {
 
 const addLivroDB = async (body) => {
     try {
-        const { titulo, autor, editora, ano } = body;
+        const { titulo, data_cadastro, autor, editora, ano } = body;
         const results = await pool.query(`
             INSERT INTO livros (titulo, data_cadastro, autor, editora, ano) 
             VALUES ($1, CURRENT_DATE, $2, $3, $4)
             RETURNING codigo, titulo, to_char(data_cadastro,'YYYY-MM-DD') as data_cadastro, autor, editora, ano
-        `, [titulo, autor, editora, ano]);
+        `, [titulo, data_cadastro, autor, editora, ano]);
         const livro = results.rows[0];
         return new Livro(
             livro.codigo,
@@ -68,9 +68,7 @@ const updateLivroDB = async (body) => {
             livro.titulo,
             livro.data_cadastro,
             livro.autor,
-            '',
             livro.editora,
-            '',
             livro.ano
         );
     } catch (err) {
@@ -86,9 +84,9 @@ const deleteLivroDB = async (codigo) => {
             RETURNING codigo
         `, [codigo]);
         if (results.rowCount == 0) {
-            throw `Nenhum registro encontrado com o código ${codigo} para ser removcodigoo`;
+            throw `Nenhum registro encontrado com o código ${codigo} para ser removido`;
         } else {
-            return 'Livro removcodigoo com sucesso';
+            return 'Livro removido com sucesso';
         }
     } catch (err) {
         throw 'Erro ao remover o livro: ' + err;
@@ -98,12 +96,12 @@ const deleteLivroDB = async (codigo) => {
 const getLivroPorCodigoDB = async (codigo) => {
     try {
         const results = await pool.query(`
-            SELECT p.codigo, p.titulo, to_char(data_cadastro,'YYYY-MM-DD'), p.autor, a.nome AS autor_nome,
-                   p.editora, e.nome AS editora_nome, p.ano
-            FROM livros p
-            JOIN autores a ON p.autor = a.codigo
-            JOIN editoras e ON p.editora = e.codigo 
-            WHERE p.codigo = $1
+            SELECT l.codigo as codigo, l.titulo as titulo, to_char(data_cadastro,'YYYY-MM-DD') as data_cadastro, l.autor as autor, a.nome AS autor_nome,
+                   l.editora as editora, e.nome AS editora_nome, l.ano as ano
+            FROM livros l
+            JOIN autores a ON l.autor = a.codigo
+            JOIN editoras e ON l.editora = e.codigo 
+            WHERE l.codigo = $1
         `, [codigo]);
         if (results.rowCount == 0) {
             throw 'Nenhum registro encontrado com o código: ' + codigo;
