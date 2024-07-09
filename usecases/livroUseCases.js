@@ -28,12 +28,12 @@ const getLivrosDB = async () => {
 
 const addLivroDB = async (body) => {
     try {
-        const { titulo, data_cadastro, autor, editora, ano } = body;
+        const { titulo, autor, editora, ano } = body;
         const results = await pool.query(`
             INSERT INTO livros (titulo, data_cadastro, autor, editora, ano) 
             VALUES ($1, CURRENT_DATE, $2, $3, $4)
             RETURNING codigo, titulo, to_char(data_cadastro,'YYYY-MM-DD') as data_cadastro, autor, editora, ano
-        `, [titulo, data_cadastro, autor, editora, ano]);
+        `, [titulo, autor, editora, ano]);
         const livro = results.rows[0];
         return new Livro(
             livro.codigo,
