@@ -7,7 +7,7 @@ const { verificaJWT } = require('../controllers/segurancaController');
 const rotasEditoras = new Router();
 
 rotasEditoras.route('/editora')
-   .get(getEditoras)
+   .get(verificaJWT, getEditoras)
    .post(verificaJWT, addEditora)
    .put(verificaJWT, updateEditora)
 

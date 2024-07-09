@@ -7,12 +7,12 @@ const { verificaJWT } = require('../controllers/segurancaController')
 const rotasLivros = new Router();
 
 rotasLivros.route('/livro')
-   .get(getLivros)
+   .get(verificaJWT, getLivros)
    .post(verificaJWT, addLivro)
    .put(verificaJWT, updateLivro)
 
 rotasLivros.route('/livro/:codigo')
-   .get(getLivroPorCodigo)
+   .get(verificaJWT, getLivroPorCodigo)
    .delete(verificaJWT, deleteLivro)
 
 module.exports = { rotasLivros };
